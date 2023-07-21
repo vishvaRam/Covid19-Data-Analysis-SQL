@@ -35,9 +35,20 @@ SELECT location, MAX(total_cases) as Highest_Infection_Rate ,MAX((total_cases/po
     FROM death
     WHERE continent IS NOT NULL
     GROUP BY location,population
-    HAVING Highest_Infection_Rate IS NOT NULL
+    HAVING MAX(total_cases)  IS NOT NULL
     ORDER BY Highest_Infection_Rate
     LIMIT 10;
+-- "location","highest_infection_rate","infection_rate_persentage"
+-- "Anguilla",3543,0
+-- "Cook Islands",5847,0
+-- "British Virgin Islands",7131,0
+-- "Chad",7432,0
+-- "Comoros",8270,0
+-- "Antigua and Barbuda",8736,0
+-- "Bonaire Sint Eustatius and Saba",10738,0
+-- "Djibouti",13489,0
+-- "Central African Republic",14712,0
+-- "Bermuda",16988,0
 
 
 --Top 10 countries which has top infection rate
@@ -48,6 +59,17 @@ FROM death
 GROUP BY location,population
 ORDER BY Infection_Rate_Persentage DESC
 LIMIT 10;
+-- "location","highest_infection_rate","infection_rate_persentage"
+-- "Asia",162934777,""
+-- "Brunei",200279,0
+-- "Belgium",4398161,0
+-- "Chad",7432,0
+-- "Afghanistan",184819,0
+-- "Antigua and Barbuda",8736,0
+-- "Bulgaria",1198359,0
+-- "Bonaire Sint Eustatius and Saba",10738,0
+-- "Belize",66767,0
+-- "Austria",4734005,0
 
 
 
@@ -56,7 +78,7 @@ SELECT location,
         date,
         total_cases,
         total_deaths, 
-        (total_deaths/total_cases)*100 as DeathPercentage
+        (CAST(total_deaths as int)/total_cases)*100 as DeathPercentage
 FROM death
 WHERE location = 'India'
 ORDER BY location,date
@@ -111,6 +133,18 @@ SELECT location,SUM(new_cases) as Total_Cases ,
     HAVING Total_Deaths IS NOT NULL AND Total_Cases IS NOT NULL
     ORDER BY Total_Deaths DESC
     LIMIT 10;
+-- Output 
+-- location	Total_Cases	Total_Deaths	DeathPercentage
+-- India	43920451	518737	1.1810830448895
+-- Indonesia	6172390	156916	2.54222432477533
+-- Iran	7337928	141717	1.93129450166314
+-- Turkey	14700846	99184	0.674682259782872
+-- Philippines	3756048	60702	1.61611353209544
+-- Vietnam	10768844	43277	0.401872290099104
+-- Malaysia	4654951	35923	0.77171596435709
+-- Japan	11499016	31946	0.277815075655169
+-- Thailand	4586933	31264	0.681588329282333
+-- Pakistan	1551251	30470	1.96422113507098
 
 
 --Top 5 contries from each continent which has the highest death rate
@@ -126,18 +160,53 @@ SELECT * FROM (
     SELECT location,continent,total_cases,total_deaths, 
         ROW_NUMBER() OVER(PARTITION BY continent ORDER BY total_deaths DESC) AS rn
         FROM CTC
-)
+) AS CONT
 WHERE rn <= 5 ;
+ -- Output
+-- location	continent
+-- South Africa	Africa
+-- Tunisia	Africa
+-- Egypt	Africa
+-- Morocco	Africa
+-- Ethiopia	Africa
+-- India	Asia
+-- Indonesia	Asia
+-- Iran	Asia
+-- Turkey	Asia
+-- Philippines	Asia
+-- Russia	Europe
+-- United Kingdom	Europe
+-- Italy	Europe
+-- France	Europe
+-- Germany	Europe
+-- United States	North America
+-- Mexico	North America
+-- Canada	North America
+-- Guatemala	North America
+-- Honduras	North America
+-- Australia	Oceania
+-- New Zealand	Oceania
+-- Fiji	Oceania
+-- Papua New Guinea	Oceania
+-- French Polynesia	Oceania
+-- Brazil	South America
+-- Peru	South America
+-- Colombia	South America
+-- Argentina	South America
+-- Chile	South America
+
 
 
 --The impact of covid 19 on earth
 SELECT SUM(new_cases) as Total_Cases ,
     SUM(cast(new_deaths as int)) as Total_Deaths,
-    SUM(cast(new_deaths as int)) / SUM(new_cases ) *100 as Death_percentage
+    SUM(cast(new_deaths as int)) / SUM(CAST(new_cases AS INT) ) *100 as Death_percentage
     FROM death
     WHERE continent is not NULL
     ORDER BY Total_Deaths;
-
+-- Output
+	-- Death_percentage	Total_Cases	Total_Deaths
+	-- 1.11300317157945	570082203	6345033
 
 
 --Finding the least gdp contries deaths which has gdp below 2000
@@ -149,6 +218,17 @@ WHERE de.continent is not NULL AND vac.gdp_per_capita IS NOT NULL AND vac.gdp_pe
 GROUP BY de.location, vac.gdp_per_capita
 ORDER BY Death_percentage DESC
 LIMIT 10;
+-- Output
+-- Yemen
+-- Afghanistan
+-- Liberia
+-- Niger
+-- Malawi
+-- Gambia
+-- Haiti
+-- Chad
+-- Zimbabwe
+-- Uganda
 
 
 --Life expectancy of India
@@ -157,7 +237,9 @@ FROM vaccine
 WHERE continent IS NOT NULL AND location = 'India'
 GROUP BY location,life_expectancy
 ORDER BY location;
-
+-- outPut
+-- location	life_expectancy
+-- India	69.66
 
 
 --Find the total cases in India using PARTITION BY
@@ -172,3 +254,6 @@ WHERE location ='India'
 SELECT location,MAX(total) as total_cases
 FROM india
 GROUP BY location
+-- Output
+-- location	total_cases
+-- India	43920451
