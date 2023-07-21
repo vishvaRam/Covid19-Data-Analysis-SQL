@@ -72,19 +72,6 @@ LIMIT 10;
 -- "Austria",4734005,0
 
 
-
---Analysisng death percentage of india
-SELECT location,
-        date,
-        total_cases,
-        total_deaths, 
-        (CAST(total_deaths as int)/total_cases)*100 as DeathPercentage
-FROM death
-WHERE location = 'India'
-ORDER BY location,date
-LIMIT 20;
-
-
 --Infection percentage of India
 SELECT 
     location, 
@@ -93,6 +80,9 @@ SELECT
 FROM death
 WHERE location = 'India'
 GROUP BY location,population;
+-- Output
+-- location	Highest_Infection_Rate	Infection_Rate_Persentage
+-- India	43920451	3.12031679768029
 
 
 --Countries with highest death count
@@ -103,6 +93,17 @@ WHERE continent IS NOT NULL
 GROUP BY location
 ORDER BY deaths DESC
 LIMIT 10;
+-- Output
+-- United States
+-- South Africa
+-- Belgium
+-- Iran
+-- Bosnia and Herzegovina
+-- Egypt
+-- Switzerland
+-- Nepal
+-- Colombia
+-- Tunisia
 
 
 --Max death count
@@ -113,6 +114,17 @@ SELECT location,
     GROUP BY location
     ORDER BY deaths DESC
     LIMIT 10;
+--Output
+-- United States
+-- Brazil
+-- India
+-- Mexico
+-- Russia
+-- Peru
+-- United Kingdom
+-- Italy
+-- France
+-- Colombia
 
 
 --Which Continent have the max death
@@ -121,6 +133,13 @@ SELECT continent, MAX(cast(total_deaths as int)) as TotalDeaths
     WHERE continent is not NULL
     GROUP BY continent
     ORDER BY TotalDeaths desc;
+-- Output
+-- North America
+-- South America
+-- Asia
+-- Europe
+-- Africa
+-- Oceania
 
 
 --Top contries affected in Asia
@@ -205,8 +224,8 @@ SELECT SUM(new_cases) as Total_Cases ,
     WHERE continent is not NULL
     ORDER BY Total_Deaths;
 -- Output
-	-- Death_percentage	Total_Cases	Total_Deaths
-	-- 1.11300317157945	570082203	6345033
+-- Death_percentage	Total_Cases	Total_Deaths
+-- 1.11300317157945	570082203	6345033
 
 
 --Finding the least gdp contries deaths which has gdp below 2000
