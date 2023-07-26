@@ -2,13 +2,9 @@
 -- Covid19 Data Analysis
 
 -- Getting to Know the data and data types
-SELECT COUNT(*) AS ROWS FROM death;
+SELECT COUNT(*) FROM death;
 
-SELECT COUNT(*) AS ROWS FROM vaccine;
-
-DESCRIBE death;
-
-DESCRIBE vaccine;
+SELECT COUNT(*) FROM vaccine;
 
 SELECT * FROM death LIMIT 1;
 
@@ -167,7 +163,7 @@ SELECT location,SUM(new_cases) as Total_Cases ,
 
 
 --Top 5 contries from each continent which has the highest death rate
-SELECT * FROM (
+CREATE VIEW rn AS
     WITH CTC AS(
     select location,continent,
         SUM(CAST(new_cases as int)) as total_cases,
@@ -179,8 +175,10 @@ SELECT * FROM (
     SELECT location,continent,total_cases,total_deaths, 
         ROW_NUMBER() OVER(PARTITION BY continent ORDER BY total_deaths DESC) AS rn
         FROM CTC
-) AS CONT
-WHERE rn <= 5 ;
+    
+SELECT * FROM rn 
+WHERE rn.rn <5
+
  -- Output
 -- location	continent
 -- South Africa	Africa
